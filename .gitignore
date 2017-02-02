@@ -1,0 +1,5 @@
+.idea
+/vendor
+/app.db
+/cache_stackoverflow_time.txt
+/composer.lock
