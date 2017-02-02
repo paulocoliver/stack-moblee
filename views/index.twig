@@ -1,1 +1,97 @@
-index
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stack moblee</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+    <style>
+        .lightbox-shadow{position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0,0,0,.5);}
+        .lightbox-shadow i.fa{position: absolute; left: 50%; top: 50%; color: #fff;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header clearfix">
+        <h1 class="text-muted">PHP - StackOverflow</h1><br>
+        <button type="button" id="persistir-dados" class="btn btn-info">Persistir dados</button><br><br>
+    </div>
+    <div class="jumbotron">
+        <form action="{{ url('api-moblee') }}" method="get" target="_blank">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="control-label">Page</label><br>
+                        <input type="text" class="form-control" name="page">
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="control-label">RPP</label><br>
+                        <input type="text" class="form-control" name="rpp">
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="control-label">Sort</label><br>
+                        <input type="text" class="form-control" name="sort">
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="control-label">Score</label><br>
+                        <input type="text" class="form-control" name="score">
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success btn-lg pull-right">Buscar</button>
+            <div class="clearfix"></div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    var Helper = new (function(){
+        this.showLoading = function(){
+            var modal = $('#loading-modal');
+            if(!modal.length){
+                modal = $('<div>')
+                        .attr('id', 'loading-modal')
+                        .addClass('lightbox-shadow')
+                        .html('<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw" aria-hidden="true"></i>')
+                        .appendTo('body');
+            }
+
+            modal.fadeIn({duration : 100 });
+        };
+        this.hideLoading = function(){
+           $('#loading-modal').fadeOut({ duration : 100 });
+        };
+    });
+
+    $('#persistir-dados').on('click', function(){
+        Helper.showLoading();
+        $.ajax({
+            type    : "GET",
+            url     : "{{ url('get-api-stackoverflow') }}",
+            dataType: "json",
+            success  : function(response){
+                if (response.message)
+                    setTimeout(function(){alert(response.message); }, 1000);
+            },
+            error : function(error){
+                alert('Unexpected error: '+error.message);
+            },
+            complete : function(){
+                setTimeout(function(){
+                    Helper.hideLoading();
+                },500);
+            }
+        });
+    })
+</script>
+</body>
+</html>

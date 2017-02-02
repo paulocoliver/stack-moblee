@@ -81,7 +81,7 @@ $app->get('/stack_moblee/v1/question', function() use($app, $db) {
 		$result = ['success' => 0, 'message' => 'Desculpe ocorreu um erro. '.$e->getMessage()];
 	}
 	return $app->json($result);
-});
+})->bind('api-moblee');
 
 $app->get('/get-api-stackoverflow', function() use($app, $db) {
 	try {
@@ -109,12 +109,12 @@ $app->get('/get-api-stackoverflow', function() use($app, $db) {
 
 		file_put_contents('last_update.txt', time());
 
-		$result = ['success' => 1];
+		$result = ['success' => 1, 'message' => 'Dados persistidos com sucesso'];
 
 	} catch (Exception $e) {
 		$result = ['success' => 0, 'message' => 'Desculpe ocorreu um erro. '.$e->getMessage()];
 	}
 	return $app->json($result);
-});
+})->bind('get-api-stackoverflow');
 
 $app->run();
