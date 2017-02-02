@@ -1,8 +1,6 @@
 <?php
 require_once __DIR__.'/vendor/autoload.php';
 
-use Symfony\Component\HttpFoundation\Request;
-
 $app = new Silex\Application();
 $app['debug'] = true;
 
@@ -42,6 +40,49 @@ $app->get('/', function () use ($app) {
 	return $app['twig']->render('index.twig', []);
 });
 
+$app->get('/stack_moblee/v1/question', function() use($app, $db) {
+	try {
+
+		$page  = (int) !empty($_GET['page']) ? $_GET['page'] : 1;
+		$rpp   = (int) !empty($_GET['rpp']) ? $_GET['rpp'] : 10;
+		$sort  = !empty($_GET['sort']) ? $_GET['sort'] : 'question_id';
+		$score = (!empty($_GET['score']) || $_GET['score'] == 0) ? (int)$_GET['score'] : '';
+
+		if (!empty($sort) && !in_array($sort, ['question_id', 'title', 'owner_name', 'score', 'creation_date', 'link', 'is_answered']))
+			throw new Exception('sort invalid');
+
+		$sql = $db->createQueryBuilder()
+			->select('*')
+			->from('stackoverflow')
+			->orderBy($sort, 'ASC');
+
+		$paramsWhere = [];
+		if (is_int($score)) {
+			$sql->where('score > ?');
+			$paramsWhere = [$score];
+		}
+
+		if (!empty($page))
+			$sql->setFirstResult($page); # offset
+
+		if (!empty($rpp))
+			$sql->setMaxResults($rpp); # limit
+
+		$stackoverflow = $db->fetchAll($sql, $paramsWhere);
+
+		$last_update = file_get_contents('last_update.txt');
+		$result = [
+			'success' => 1,
+			'last_update' => $last_update,
+			'content' => $stackoverflow,
+		];
+
+	} catch (Exception $e) {
+		$result = ['success' => 0, 'message' => 'Desculpe ocorreu um erro. '.$e->getMessage()];
+	}
+	return $app->json($result);
+});
+
 $app->get('/get-api-stackoverflow', function() use($app, $db) {
 	try {
 		$client = new GuzzleHttp\Client();
@@ -66,7 +107,7 @@ $app->get('/get-api-stackoverflow', function() use($app, $db) {
 			]);
 		}
 
-		file_put_contents('cache_stackoverflow_time.txt', time());
+		file_put_contents('last_update.txt', time());
 
 		$result = ['success' => 1];
 

@@ -1,5 +1,5 @@
 .idea
 /vendor
 /app.db
-/cache_stackoverflow_time.txt
+/last_update.txt
 /composer.lock
