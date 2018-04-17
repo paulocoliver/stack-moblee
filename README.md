@@ -1,15 +1,15 @@
 Stack moblee
 ==============================
 
-Requisitos
+Requirements:
 -------
-- [PHP](http://www.php.net/) 5.5.9 or later.
+- [PHP](http://www.php.net/) 7.0 or later.
 - [Sqlite](https://sqlite.org/index.html)
 - [Git](https://git-scm.com/downloads)
 - [Composer](https://getcomposer.org/)
 
 
-Instalação
+Installation:
 -------
 ```bash
 $ git clone https://github.com/paulocoliver/stack-moblee.git stack-moblee
@@ -19,6 +19,6 @@ $ php -S localhost:8080
 ```
 Acesse no seu navegador: [http://localhost:8080](http://localhost:8080)
 
-Referência: 
+References: 
 -------
 [http://silex.sensiolabs.org/doc/2.0/](http://silex.sensiolabs.org/doc/2.0/)
